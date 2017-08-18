@@ -6,69 +6,73 @@ class Dracula
   require "dracula/namespace"
   require "dracula/ui"
 
-  def self.program_name(name = nil)
-    if name.nil?
-      @@program_name || "dracula" # getter
-    else
-      @@program_name = name       # setter
-    end
-  end
-
-  def self.start(args)
-    if args.empty? || (args.size == 1 && args[0] == "help")
-      namespace.help
-    else
-      action = args[0] == "help" ? :help : :run
-
-      if args[0] == "help"
-        action = :help
-
-        args.shift # drop 'help'
-
-        command = args.shift
-        params  = args
+  class << self
+    def program_name(name = nil)
+      if name.nil?
+        @@program_name || "dracula" # getter
       else
-        action = :run
-        command = args.shift
-        params  = args
+        @@program_name = name       # setter
       end
-
-      namespace.dispatch(command.split(":"), params, action)
     end
-  end
 
-  def self.namespace
-    @namespace ||= Dracula::Namespace.new(self)
-  end
+    def start(args)
+      if args.empty? || (args.size == 1 && args[0] == "help")
+        namespace.help
+      else
+        action = args[0] == "help" ? :help : :run
 
-  def self.option(name, params = {})
-    @options ||= []
-    @options << Command::Option.new(name, params)
-  end
+        if args[0] == "help"
+          action = :help
 
-  def self.long_desc(description)
-    @long_desc = description
-  end
+          args.shift # drop 'help'
 
-  def self.desc(name, description)
-    @desc = Command::Desc.new(name, description)
-  end
+          command = args.shift
+          params  = args
+        else
+          action = :run
+          command = args.shift
+          params  = args
+        end
 
-  def self.register(name, description, klass)
-    klass.namespace.name = name
-    klass.namespace.description = description
+        namespace.dispatch(command.split(":"), params, action)
+      end
+    end
 
-    namespace.add_subcommand(klass.namespace)
-  end
+    def namespace
+      @namespace ||= Dracula::Namespace.new(self)
+    end
 
-  private_class_method def self.method_added(method_name)
-    command = Command.new(self, method_name, @desc, @long_desc, @options)
+    def option(name, params = {})
+      @options ||= []
+      @options << Command::Option.new(name, params)
+    end
 
-    @desc = nil
-    @long_desc = nil
-    @options = nil
+    def long_desc(description)
+      @long_desc = description
+    end
 
-    namespace.add_command(command)
+    def desc(name, description)
+      @desc = Command::Desc.new(name, description)
+    end
+
+    def register(name, description, klass)
+      klass.namespace.name = name
+      klass.namespace.description = description
+
+      namespace.add_subcommand(klass.namespace)
+    end
+
+    private
+
+    def method_added(method_name)
+      command = Command.new(self, method_name, @desc, @long_desc, @options)
+
+      @desc = nil
+      @long_desc = nil
+      @options = nil
+
+      namespace.add_command(command)
+    end
   end
 
   attr_reader :options
