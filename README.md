@@ -1,6 +1,6 @@
 # Dracula
 
-[![Build Status](https://semaphoreci.com/api/v1/shiroyasha/dracula/branches/master/badge.svg)](https://semaphoreci.com/shiroyasha/dracula)
+[![Build Status](https://semaphoreci.com/api/v1/renderedtext/dracula/branches/master/badge.svg)](https://semaphoreci.com/renderedtext/dracula)
 
 ## Usage
 
