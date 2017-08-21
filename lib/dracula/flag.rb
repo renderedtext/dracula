@@ -1,15 +1,12 @@
-module Dracula
-  class Flag
-    attr_reader :name
-    attr_reader :short_name
-    attr_reader :type
+class Dracula
+  class Flag < Struct.new(:name, :params)
 
-    def initialize(name, params)
-      @name = name
-      @params = params
+    def short_name
+      params[:aliases]
+    end
 
-      @short_name = params.fetch(:short)
-      @type = params.fetch(:type, :string)
+    def type
+      params[:type] || :string
     end
 
     def boolean?
@@ -17,15 +14,28 @@ module Dracula
     end
 
     def has_default_value?
-      @params.key?(:default_value) || boolean?
+      params.has_key?(:default) || boolean?
     end
 
     def default_value
-      if type == :boolean
-        @params.key?(:default_value) || false
+      if boolean?
+        params.key?(:default) ? params[:default] : false
       else
-        @default_value
+        params[:default]
       end
     end
+
+    def alias_name
+      params[:alias]
+    end
+
+    def banner
+      if alias_name.empty?
+        "--#{name}"
+      else
+        "-#{alias_name}, --#{name}"
+      end
+    end
+
   end
 end

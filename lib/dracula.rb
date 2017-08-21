@@ -3,6 +3,7 @@ require "optparse"
 
 class Dracula
   require "dracula/command"
+  require "dracula/flag"
   require "dracula/namespace"
   require "dracula/ui"
 
@@ -44,7 +45,7 @@ class Dracula
 
     def option(name, params = {})
       @options ||= []
-      @options << Command::Option.new(name, params)
+      @options << Dracula::Flag.new(name, params)
     end
 
     def long_desc(description)
