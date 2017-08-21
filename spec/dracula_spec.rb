@@ -146,5 +146,43 @@ RSpec.describe Dracula do
 
       expect { cli.start(["hello", "--json"]) }.to output(/true, false, peter,/).to_stdout
     end
+
+    describe "required params" do
+      context "required param is passed to the command" do
+        it "displays an error and the command's help" do
+          cli = Class.new(Dracula) do
+
+            option :message, :required => true
+            desc "hello", "testing"
+            def hello
+              puts "#{options[:message]}"
+            end
+
+          end
+
+          expect { cli.start(["hello", "--message", "yo"]) }.to output("yo\n").to_stdout
+        end
+      end
+
+      context "required param is not passed" do
+        it "displays an error and the command's help" do
+          cli = Class.new(Dracula) do
+            option :message, :required => true
+            desc "hello", "testing"
+            def hello
+              puts "#{options[:message]}"
+            end
+          end
+
+          msg = [
+            "Required Parameter: --message",
+            "",
+            ""
+          ].join("\n")
+
+          expect { cli.start(["hello"]) }.to output(msg).to_stdout
+        end
+      end
+    end
   end
 end
