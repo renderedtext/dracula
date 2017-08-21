@@ -49,7 +49,7 @@ class Dracula
       args  = params.take_while { |p| p[0] != "-" }
       flags = parse_flags(params.drop_while { |p| p[0] != "-" })
 
-      missing_flags = missing_required_params(flags)
+      missing_flags = missing_required_flags(flags)
 
       if missing_flags.empty?
         @klass.new(flags).public_send(method_name, *args)
@@ -57,12 +57,13 @@ class Dracula
         puts "Required Parameter: --#{missing_flags.first.name}"
         puts ""
         help
+        exit(1)
       end
     end
 
     private
 
-    def missing_required_params(parsed_flags)
+    def missing_required_flags(parsed_flags)
       flags.select(&:required?).reject do |flag|
         parsed_flags.keys.include?(flag.name)
       end

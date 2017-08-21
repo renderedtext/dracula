@@ -3,6 +3,13 @@ require "spec_helper"
 require_relative "example_cli"
 
 RSpec.describe Dracula do
+  def catch_exit
+    yield
+    0
+  rescue SystemExit => e
+    e.status
+  end
+
   it "has a version number" do
     expect(Dracula::VERSION).not_to be nil
   end
@@ -186,7 +193,8 @@ RSpec.describe Dracula do
             ""
           ].join("\n")
 
-          expect { cli.start(["hello"]) }.to output(msg).to_stdout
+          expect { catch_exit { cli.start(["hello"]) } }.to output(msg).to_stdout
+          expect(catch_exit { cli.start(["hello"]) }).to eq(1)
         end
       end
     end
