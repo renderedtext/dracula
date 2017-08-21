@@ -3,6 +3,13 @@ require "spec_helper"
 require_relative "example_cli"
 
 RSpec.describe Dracula do
+  def catch_exit
+    yield
+    0
+  rescue SystemExit => e
+    e.status
+  end
+
   it "has a version number" do
     expect(Dracula::VERSION).not_to be nil
   end
@@ -145,6 +152,51 @@ RSpec.describe Dracula do
       end
 
       expect { cli.start(["hello", "--json"]) }.to output(/true, false, peter,/).to_stdout
+    end
+
+    describe "required params" do
+      context "required param is passed to the command" do
+        it "displays an error and the command's help" do
+          cli = Class.new(Dracula) do
+
+            option :message, :required => true
+            desc "hello", "testing"
+            def hello
+              puts "#{options[:message]}"
+            end
+
+          end
+
+          expect { cli.start(["hello", "--message", "yo"]) }.to output("yo\n").to_stdout
+        end
+      end
+
+      context "required param is not passed" do
+        it "displays an error and the command's help" do
+          cli = Class.new(Dracula) do
+            option :message, :required => true
+            desc "hello", "testing"
+            def hello
+              puts "#{options[:message]}"
+            end
+          end
+
+          msg = [
+            "Required Parameter: --message",
+            "",
+            "Usage: abc hello",
+            "",
+            "testing",
+            "",
+            "Flags:",
+            "  --message",
+            ""
+          ].join("\n")
+
+          expect { catch_exit { cli.start(["hello"]) } }.to output(msg).to_stdout
+          expect(catch_exit { cli.start(["hello"]) }).to eq(1)
+        end
+      end
     end
   end
 end

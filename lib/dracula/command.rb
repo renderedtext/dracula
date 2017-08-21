@@ -3,46 +3,6 @@ class Dracula
 
     Desc = Struct.new(:name, :description)
 
-    class Option < Struct.new(:name, :params)
-
-      def short_name
-        params[:aliases]
-      end
-
-      def type
-        params[:type] || :string
-      end
-
-      def boolean?
-        type == :boolean
-      end
-
-      def has_default_value?
-        params.has_key?(:default) || boolean?
-      end
-
-      def default_value
-        if boolean?
-          params.key?(:default) ? params[:default] : false
-        else
-          params[:default]
-        end
-      end
-
-      def alias_name
-        params[:alias]
-      end
-
-      def banner
-        if alias_name.empty?
-          "--#{name}"
-        else
-          "-#{alias_name}, --#{name}"
-        end
-      end
-
-    end
-
     attr_reader :method_name
     attr_reader :desc
     attr_reader :options
@@ -89,10 +49,25 @@ class Dracula
       args  = params.take_while { |p| p[0] != "-" }
       flags = parse_flags(params.drop_while { |p| p[0] != "-" })
 
-      @klass.new(flags).public_send(method_name, *args)
+      missing_flags = missing_required_flags(flags)
+
+      if missing_flags.empty?
+        @klass.new(flags).public_send(method_name, *args)
+      else
+        puts "Required Parameter: --#{missing_flags.first.name}"
+        puts ""
+        help
+        exit(1)
+      end
     end
 
     private
+
+    def missing_required_flags(parsed_flags)
+      flags.select(&:required?).reject do |flag|
+        parsed_flags.keys.include?(flag.name)
+      end
+    end
 
     def parse_flags(args)
       parsed_flags = {}
