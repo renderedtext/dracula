@@ -1,12 +1,12 @@
 class Dracula
   class Flag < Struct.new(:name, :params)
 
-    def short_name
-      params[:aliases]
-    end
-
     def type
       params[:type] || :string
+    end
+
+    def required?
+      params[:required] == true
     end
 
     def boolean?
@@ -29,8 +29,10 @@ class Dracula
       params[:alias]
     end
 
+    alias_method :short_name, :alias_name
+
     def banner
-      if alias_name.empty?
+      if alias_name.nil?
         "--#{name}"
       else
         "-#{alias_name}, --#{name}"

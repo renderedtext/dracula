@@ -177,6 +177,12 @@ RSpec.describe Dracula do
           msg = [
             "Required Parameter: --message",
             "",
+            "Usage: abc hello",
+            "",
+            "testing",
+            "",
+            "Flags:",
+            "  --message",
             ""
           ].join("\n")
 
