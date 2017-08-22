@@ -22,9 +22,22 @@ class Dracula
       desc.name
     end
 
+    def arg_names
+      @klass
+        .instance_method(@method_name)
+        .parameters
+        .select { |p| p[0] == :req }
+        .map { |p| p[1].to_s.upcase }
+        .join(" ")
+    end
+
+    def banner
+      "#{@klass.namespace.name ? "#{@klass.namespace.name}:" : "" }#{desc.name} #{arg_names}"
+    end
+
     def help
       msg = [
-        "Usage: #{Dracula.program_name} #{@klass.namespace.name ? "#{@klass.namespace.name}:" : "" }#{desc.name}",
+        "Usage: #{Dracula.program_name} #{banner}",
         "",
         "#{desc.description}",
         ""

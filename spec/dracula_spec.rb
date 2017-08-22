@@ -34,7 +34,7 @@ RSpec.describe Dracula do
     describe "command help" do
       it "shows the usage, flags, and long description" do
         msg = [
-          "Usage: abc login",
+          "Usage: abc login ",
           "",
           "Log in to the cli",
           "",
@@ -74,7 +74,7 @@ RSpec.describe Dracula do
     describe "subcommand help" do
       it "displays help for a subcommand" do
         msg = [
-          "Usage: abc teams:info",
+          "Usage: abc teams:info TEAM",
           "",
           "Show info for a team",
           "",
@@ -172,7 +172,7 @@ RSpec.describe Dracula do
           msg = [
             "Parameter has no value: --name NAME",
             "",
-            "Usage: abc hello",
+            "Usage: abc hello ",
             "",
             "testing",
             "",
@@ -245,7 +245,7 @@ RSpec.describe Dracula do
           msg = [
             "Required Parameter: --message MESSAGE",
             "",
-            "Usage: abc hello",
+            "Usage: abc hello ",
             "",
             "testing",
             "",
