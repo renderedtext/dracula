@@ -154,6 +154,67 @@ RSpec.describe Dracula do
       expect { cli.start(["hello", "--json"]) }.to output(/true, false, peter,/).to_stdout
     end
 
+    describe "flags that expect parameters" do
+      before do
+        @cli = Class.new(Dracula) do
+
+          option :name
+          desc "hello", "testing"
+          def hello
+            puts "#{options[:name]}"
+          end
+
+        end
+      end
+
+      context "when the parameter is not passed" do
+        it "displays an error and the help screen of the command" do
+          msg = [
+            "Parameter has no value: --name VALUE",
+            "",
+            "Usage: abc hello",
+            "",
+            "testing",
+            "",
+            "Flags:",
+            "  --name",
+            ""
+          ].join("\n")
+
+          expect(catch_exit { @cli.start(["hello", "--name"]) }).to eq(1)
+          expect { catch_exit { @cli.start(["hello", "--name"]) } }.to output(msg).to_stdout
+        end
+      end
+
+      context "when the parameter is passed" do
+        it "parses the parameter and executes the command" do
+          msg = [
+            "Jack",
+            ""
+          ].join("\n")
+
+          expect { @cli.start(["hello", "--name", "Jack"]) }.to output(msg).to_stdout
+        end
+      end
+    end
+
+    it "sets default values" do
+      cli = Class.new(Dracula) do
+
+        option :json, :type => :boolean, :default => true
+        option :yaml, :type => :boolean, :default => false
+        option :name, :default => "peter"
+        option :age
+        desc "hello", "testing"
+        def hello
+          puts "#{options[:json]}, #{options[:yaml]}, #{options[:name]}, #{options[:age]}"
+        end
+
+      end
+
+      expect { cli.start(["hello", "--json"]) }.to output(/true, false, peter,/).to_stdout
+    end
+
     describe "required params" do
       context "required param is passed to the command" do
         it "displays an error and the command's help" do
