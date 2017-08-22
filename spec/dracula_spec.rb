@@ -39,8 +39,8 @@ RSpec.describe Dracula do
           "Log in to the cli",
           "",
           "Flags:",
-          "  -u, --username",
-          "  -p, --password",
+          "  -u USERNAME, --username USERNAME",
+          "  -p PASSWORD, --password PASSWORD",
           "  -v, --verbose",
           "",
           "Examples:",
@@ -170,14 +170,14 @@ RSpec.describe Dracula do
       context "when the parameter is not passed" do
         it "displays an error and the help screen of the command" do
           msg = [
-            "Parameter has no value: --name VALUE",
+            "Parameter has no value: --name NAME",
             "",
             "Usage: abc hello",
             "",
             "testing",
             "",
             "Flags:",
-            "  --name VALUE",
+            "  --name NAME",
             ""
           ].join("\n")
 
@@ -243,14 +243,14 @@ RSpec.describe Dracula do
           end
 
           msg = [
-            "Required Parameter: --message",
+            "Required Parameter: --message MESSAGE",
             "",
             "Usage: abc hello",
             "",
             "testing",
             "",
             "Flags:",
-            "  --message",
+            "  --message MESSAGE",
             ""
           ].join("\n")
 

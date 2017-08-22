@@ -49,7 +49,7 @@ class Dracula
       args  = params.take_while { |p| p[0] != "-" }
       parsed_flags = parse_flags(params.drop_while { |p| p[0] != "-" })
 
-      missing_flags = missing_required_flags(parse_flags)
+      missing_flags = missing_required_flags(parsed_flags)
 
       unless missing_flags.empty?
         puts "Required Parameter: #{missing_flags.first.banner}"
@@ -58,7 +58,7 @@ class Dracula
         exit(1)
       end
 
-      @klass.new(flags).public_send(method_name, *args)
+      @klass.new(parsed_flags).public_send(method_name, *args)
     rescue OptionParser::MissingArgument => ex
       flag = flags.find { |f| "--#{f.name}" == ex.args.first }
 
