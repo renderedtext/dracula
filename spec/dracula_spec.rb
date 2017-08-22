@@ -74,7 +74,7 @@ RSpec.describe Dracula do
     describe "subcommand help" do
       it "displays help for a subcommand" do
         msg = [
-          "Usage: abc teams:info",
+          "Usage: abc teams:info TEAM",
           "",
           "Show info for a team",
           "",
@@ -257,6 +257,31 @@ RSpec.describe Dracula do
           expect { catch_exit { cli.start(["hello"]) } }.to output(msg).to_stdout
           expect(catch_exit { cli.start(["hello"]) }).to eq(1)
         end
+      end
+    end
+  end
+
+  describe "command arguments" do
+    context "when arguments are not passed" do
+      it "displays an error and shows the help screen" do
+        cli = Class.new(Dracula) do
+          desc "hello", "testing"
+          def hello(message)
+            puts message
+          end
+        end
+
+        msg = [
+          "Missing arguments",
+          "",
+          "Usage: abc hello MESSAGE",
+          "",
+          "testing",
+          ""
+        ].join("\n")
+
+        expect { catch_exit { cli.start(["hello"]) } }.to output(msg).to_stdout
+        expect(catch_exit { cli.start(["hello"]) }).to eq(1)
       end
     end
   end
