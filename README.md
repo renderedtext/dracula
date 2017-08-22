@@ -1,6 +1,7 @@
-# Dracula
+# Dracula — CLI Framework
 
 [![Build Status](https://semaphoreci.com/api/v1/renderedtext/dracula/branches/master/badge.svg)](https://semaphoreci.com/renderedtext/dracula)
+[![Gem Version](https://badge.fury.io/rb/dracula.svg)](https://badge.fury.io/rb/dracula)
 
 ## Usage
 
