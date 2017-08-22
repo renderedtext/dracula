@@ -47,18 +47,25 @@ class Dracula
 
     def run(params)
       args  = params.take_while { |p| p[0] != "-" }
-      flags = parse_flags(params.drop_while { |p| p[0] != "-" })
+      parsed_flags = parse_flags(params.drop_while { |p| p[0] != "-" })
 
-      missing_flags = missing_required_flags(flags)
+      missing_flags = missing_required_flags(parsed_flags)
 
-      if missing_flags.empty?
-        @klass.new(flags).public_send(method_name, *args)
-      else
-        puts "Required Parameter: --#{missing_flags.first.name}"
+      unless missing_flags.empty?
+        puts "Required Parameter: #{missing_flags.first.banner}"
         puts ""
         help
         exit(1)
       end
+
+      @klass.new(parsed_flags).public_send(method_name, *args)
+    rescue OptionParser::MissingArgument => ex
+      flag = flags.find { |f| "--#{f.name}" == ex.args.first }
+
+      puts "Parameter has no value: #{flag.banner}"
+      puts ""
+      help
+      exit(1)
     end
 
     private

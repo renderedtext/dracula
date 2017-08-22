@@ -32,10 +32,28 @@ class Dracula
     alias_method :short_name, :alias_name
 
     def banner
-      if alias_name.nil?
+      if short_name_banner
+        "#{short_name_banner}, #{long_name_banner}"
+      else
+        long_name_banner
+      end
+    end
+
+    def short_name_banner
+      return nil if short_name.nil?
+
+      if boolean?
+        "-#{short_name}"
+      else
+        "-#{short_name} #{name.upcase}"
+      end
+    end
+
+    def long_name_banner
+      if boolean?
         "--#{name}"
       else
-        "-#{alias_name}, --#{name}"
+        "--#{name} #{name.upcase}"
       end
     end
 
