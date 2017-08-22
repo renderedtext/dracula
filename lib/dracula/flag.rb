@@ -32,11 +32,15 @@ class Dracula
     alias_method :short_name, :alias_name
 
     def banner
-      if alias_name.nil?
+      @banner = if alias_name.nil?
         "--#{name}"
       else
         "-#{alias_name}, --#{name}"
       end
+
+      @banner << " VALUE" unless boolean?
+
+      @banner
     end
 
   end

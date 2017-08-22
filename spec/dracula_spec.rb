@@ -177,7 +177,7 @@ RSpec.describe Dracula do
             "testing",
             "",
             "Flags:",
-            "  --name",
+            "  --name VALUE",
             ""
           ].join("\n")
 
