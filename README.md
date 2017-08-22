@@ -165,6 +165,49 @@ $ cli hello --name Peter --json
 { "message": "Hi Peter!" }
 ```
 
+## Namespaces
+
+A CLI application can have subcommands and subnamespaces. For example:
+
+``` ruby
+class Greetings < Dracula
+
+  desc "hello", "displays a hello message"
+  def hello
+    puts "Hi!"
+  end
+
+  desc "bye", "displays a bye message"
+  def bye
+    puts "Bye!"
+  end
+
+end
+
+class CLI < Dracula
+
+  desc "suck_blood", "suck blood from innocent victims"
+  def suck_blood
+    puts "BLOOD!"
+  end
+
+  subcommand "greetings", "shows various greetings", Greetings
+end
+
+CLI.start(ARGV)
+```
+
+```
+$ cli suck_blood
+BLOOD!
+
+$ cli greetings:hello
+Hi!
+
+$ cli greetings:bye
+Bye!
+```
+
 ## Development
 
 After checking out the repo, run `bin/setup` to install dependencies. Then,
