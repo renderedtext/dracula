@@ -34,7 +34,7 @@ RSpec.describe Dracula do
     describe "command help" do
       it "shows the usage, flags, and long description" do
         msg = [
-          "Usage: abc login ",
+          "Usage: abc login",
           "",
           "Log in to the cli",
           "",
@@ -172,7 +172,7 @@ RSpec.describe Dracula do
           msg = [
             "Parameter has no value: --name NAME",
             "",
-            "Usage: abc hello ",
+            "Usage: abc hello",
             "",
             "testing",
             "",
@@ -245,7 +245,7 @@ RSpec.describe Dracula do
           msg = [
             "Required Parameter: --message MESSAGE",
             "",
-            "Usage: abc hello ",
+            "Usage: abc hello",
             "",
             "testing",
             "",
@@ -257,6 +257,31 @@ RSpec.describe Dracula do
           expect { catch_exit { cli.start(["hello"]) } }.to output(msg).to_stdout
           expect(catch_exit { cli.start(["hello"]) }).to eq(1)
         end
+      end
+    end
+  end
+
+  describe "command arguments" do
+    context "when arguments are not passed" do
+      it "displays an error and shows the help screen" do
+        cli = Class.new(Dracula) do
+          desc "hello", "testing"
+          def hello(message)
+            puts message
+          end
+        end
+
+        msg = [
+          "Missing arguments",
+          "",
+          "Usage: abc hello MESSAGE",
+          "",
+          "testing",
+          ""
+        ].join("\n")
+
+        expect { catch_exit { cli.start(["hello"]) } }.to output(msg).to_stdout
+        expect(catch_exit { cli.start(["hello"]) }).to eq(1)
       end
     end
   end

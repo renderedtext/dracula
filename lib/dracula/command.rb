@@ -22,17 +22,15 @@ class Dracula
       desc.name
     end
 
-    def arg_names
-      @klass
-        .instance_method(@method_name)
-        .parameters
-        .select { |p| p[0] == :req }
-        .map { |p| p[1].to_s.upcase }
-        .join(" ")
+    def arguments
+      @klass.instance_method(@method_name).parameters.select { |p| p[0] == :req }.map { |p| p[1].to_s.upcase }
     end
 
     def banner
-      "#{@klass.namespace.name ? "#{@klass.namespace.name}:" : "" }#{desc.name} #{arg_names}"
+      namespace = @klass.namespace.name ? "#{@klass.namespace.name}:" : ""
+      args = arguments.count > 0 ? " #{arguments.join(" ")}" : ""
+
+      "#{namespace}#{desc.name}#{args}"
     end
 
     def help
@@ -59,7 +57,15 @@ class Dracula
     end
 
     def run(params)
-      args  = params.take_while { |p| p[0] != "-" }
+      args = params.take_while { |p| p[0] != "-" }
+
+      if args.count != arguments.count
+        puts "Missing arguments"
+        puts ""
+        help
+        exit(1)
+      end
+
       parsed_flags = parse_flags(params.drop_while { |p| p[0] != "-" })
 
       missing_flags = missing_required_flags(parsed_flags)
