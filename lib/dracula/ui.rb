@@ -5,6 +5,10 @@ class Dracula
       "\e[34m#{str}\e[0m"
     end
 
+    def self.error(str)
+      "\e[31m[ERROR]\e[0m #{str}"
+    end
+
     # Prints a table. Shamelesly copied from thor.
     #
     # ==== Parameters

@@ -28,21 +28,22 @@ class Dracula
 
     def banner
       namespace = @klass.namespace.name ? "#{@klass.namespace.name}:" : ""
-      args = arguments.count > 0 ? " #{arguments.join(" ")}" : ""
+      args = arguments.count > 0 ? " #{arguments.map { |a| Dracula::UI.bold("[#{a}]") }.join(" ")}" : ""
+      flags_banner = flags.count > 0 ? " " + Dracula::UI.bold("[FLAGS]") : ""
 
-      "#{namespace}#{desc.name}#{args}"
+      "#{namespace}#{desc.name}#{args}#{flags_banner}"
     end
 
     def help
       msg = [
         "Usage: #{Dracula.program_name} #{banner}",
         "",
-        "#{desc.description}",
+        "#{desc.description.capitalize}",
         ""
       ]
 
       if options.size > 0
-        msg << "Flags:"
+        msg << Dracula::UI.bold("Flags:")
 
         options.each { |option| msg << "  #{option.banner}" }
 
@@ -59,8 +60,15 @@ class Dracula
     def run(params)
       args = params.take_while { |p| p[0] != "-" }
 
-      if args.count != arguments.count
-        puts "Missing arguments"
+      if args.count < arguments.count
+        puts Dracula::UI.error("Missing arguments")
+        puts ""
+        help
+        exit(1)
+      end
+
+      if args.count > arguments.count
+        puts Dracula::UI.error("Too many arguments")
         puts ""
         help
         exit(1)
@@ -71,7 +79,7 @@ class Dracula
       missing_flags = missing_required_flags(parsed_flags)
 
       unless missing_flags.empty?
-        puts "Required Parameter: #{missing_flags.first.banner}"
+        puts Dracula::UI.error("Missing required Parameter: #{missing_flags.first.banner}")
         puts ""
         help
         exit(1)
@@ -81,7 +89,7 @@ class Dracula
     rescue OptionParser::MissingArgument => ex
       flag = flags.find { |f| "--#{f.name}" == ex.args.first }
 
-      puts "Parameter has no value: #{flag.banner}"
+      puts Dracula::UI.error("Missing flag parameter: #{flag.banner}")
       puts ""
       help
       exit(1)
