@@ -18,20 +18,20 @@ class Dracula
       @options = options || []
     end
 
+    def prefix
+      @klass.namespace.prefix
+    end
+
+    def full_name
+      "#{prefix}#{name}"
+    end
+
     def name
       desc.name
     end
 
     def arguments
       @klass.instance_method(@method_name).parameters.select { |p| p[0] == :req }.map { |p| p[1].to_s.upcase }
-    end
-
-    def banner
-      namespace = @klass.namespace.name ? "#{@klass.namespace.name}:" : ""
-      args = arguments.count > 0 ? " #{arguments.map { |a| Dracula::UI.bold("[#{a}]") }.join(" ")}" : ""
-      flags_banner = flags.count > 0 ? " " + Dracula::UI.bold("[FLAGS]") : ""
-
-      "#{namespace}#{desc.name}#{args}#{flags_banner}"
     end
 
     def help

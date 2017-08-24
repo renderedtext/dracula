@@ -14,8 +14,24 @@ class Dracula
 
     private
 
+    def banner
+      args = if @command.arguments.count > 0
+               " #{@command.arguments.map { |a| Dracula::UI.bold("[#{a}]") }.join(" ")}"
+             else
+               ""
+             end
+
+      flags_banner = if @command.flags.count > 0
+                       " " + Dracula::UI.bold("[FLAGS]")
+                     else
+                       ""
+                     end
+
+      "#{@command.full_name}#{args}#{flags_banner}"
+    end
+
     def show_usage
-      puts "Usage: #{Dracula.program_name} #{@command.banner}"
+      puts "Usage: #{Dracula.program_name} #{banner}"
       puts ""
     end
 
