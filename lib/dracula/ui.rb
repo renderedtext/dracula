@@ -1,6 +1,10 @@
 class Dracula
   class UI
 
+    def self.bold(str)
+      "\e[34m#{str}\e[0m"
+    end
+
     # Prints a table. Shamelesly copied from thor.
     #
     # ==== Parameters
