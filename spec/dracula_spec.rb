@@ -18,23 +18,27 @@ RSpec.describe Dracula do
     describe "main help screen" do
       it "lists the commands and subtopics" do
         msg = [
-          "Usage: abc <command>",
+          "Usage: abc [command]",
           "",
-          "Help topics, type abc help TOPIC for more details:",
+          "Command list, type abc help [command] for more details:",
           "",
           "  login  Log in to the cli",
+          "",
           "  teams  Manage teams",
           ""
         ].join("\n")
 
-        expect { CLI.start(["help"]) }.to output(msg).to_stdout
+        stdout, stderr = collect_output { CLI.start(["help"]) }
+
+        expect(stdout).to eq(msg)
+        expect(stderr).to eq("")
       end
     end
 
     describe "command help" do
       it "shows the usage, flags, and long description" do
         msg = [
-          "Usage: abc login",
+          "Usage: abc login [FLAGS]",
           "",
           "Log in to the cli",
           "",
@@ -46,41 +50,52 @@ RSpec.describe Dracula do
           "Examples:",
           "",
           "  $ cli login --username Peter --password Parker",
-          "  Peter:Parker",
-          ""
+          "  Peter:Parker"
         ].join("\n")
 
-        expect { CLI.start(["help", "login"]) }.to output(msg).to_stdout
+        stdout, stderr = collect_output { CLI.start(["help", "login"]) }
+
+        expect(stdout).to eq(msg)
+        expect(stderr).to eq("")
       end
     end
 
     describe "subnamespace help" do
       it "displays help for a subnamespace" do
         msg = [
-          "Usage: abc teams:<command>",
+          "Usage: abc teams:[command]",
           "",
           "Manage teams",
           "",
-          "  teams:list      List teams in an organization",
-          "  teams:info      Show info for a team",
-          "  teams:projects  Manage projects in a team",
+          "Command list, type abc help teams:[command] for more details:",
+          "",
+          "  teams:list           List teams in an organization",
+          "  teams:info           Show info for a team",
+          "",
+          "  teams:projects:add   Add a project to the team",
+          "  teams:projects:list  List projects in a team",
           ""
         ].join("\n")
 
-        expect { CLI.start(["help", "teams"]) }.to output(msg).to_stdout
+        stdout, stderr = collect_output { CLI.start(["help", "teams"]) }
+
+        expect(stdout).to eq(msg)
+        expect(stderr).to eq("")
       end
     end
 
     describe "subcommand help" do
       it "displays help for a subcommand" do
         msg = [
-          "Usage: abc teams:info TEAM",
+          "Usage: abc teams:info [TEAM]",
           "",
-          "Show info for a team",
-          "",
+          "Show info for a team"
         ].join("\n")
 
-        expect { CLI.start(["help", "teams:info"]) }.to output(msg).to_stdout
+        stdout, stderr = collect_output { CLI.start(["help", "teams:info"]) }
+
+        expect(stdout).to eq(msg)
+        expect(stderr).to eq("")
       end
     end
   end
@@ -170,19 +185,22 @@ RSpec.describe Dracula do
       context "when the parameter is not passed" do
         it "displays an error and the help screen of the command" do
           msg = [
-            "Parameter has no value: --name NAME",
+            "[ERROR] Missing flag parameter: --name NAME",
             "",
-            "Usage: abc hello",
+            "Usage: abc hello [FLAGS]",
             "",
-            "testing",
+            "Testing",
             "",
             "Flags:",
-            "  --name NAME",
-            ""
+            "  --name NAME"
           ].join("\n")
 
           expect(catch_exit { @cli.start(["hello", "--name"]) }).to eq(1)
-          expect { catch_exit { @cli.start(["hello", "--name"]) } }.to output(msg).to_stdout
+
+          stdout, stderr = collect_output { @cli.start(["hello", "--name"]) }
+
+          expect(stdout).to eq(msg)
+          expect(stderr).to eq("")
         end
       end
 
@@ -243,19 +261,22 @@ RSpec.describe Dracula do
           end
 
           msg = [
-            "Required Parameter: --message MESSAGE",
+            "[ERROR] Missing required Parameter: --message MESSAGE",
             "",
-            "Usage: abc hello",
+            "Usage: abc hello [FLAGS]",
             "",
-            "testing",
+            "Testing",
             "",
             "Flags:",
-            "  --message MESSAGE",
-            ""
+            "  --message MESSAGE"
           ].join("\n")
 
-          expect { catch_exit { cli.start(["hello"]) } }.to output(msg).to_stdout
           expect(catch_exit { cli.start(["hello"]) }).to eq(1)
+
+          stdout, stderr = collect_output { cli.start(["hello"]) }
+
+          expect(stdout).to eq(msg)
+          expect(stderr).to eq("")
         end
       end
     end
@@ -272,16 +293,45 @@ RSpec.describe Dracula do
         end
 
         msg = [
-          "Missing arguments",
+          "[ERROR] Missing arguments",
           "",
-          "Usage: abc hello MESSAGE",
+          "Usage: abc hello [MESSAGE]",
           "",
-          "testing",
-          ""
+          "Testing"
         ].join("\n")
 
-        expect { catch_exit { cli.start(["hello"]) } }.to output(msg).to_stdout
         expect(catch_exit { cli.start(["hello"]) }).to eq(1)
+
+        stdout, stderr = collect_output { cli.start(["hello"]) }
+
+        expect(stdout).to eq(msg)
+        expect(stderr).to eq("")
+      end
+    end
+
+    context "too many arguments are passed" do
+      it "displays an error and shows the help screen" do
+        cli = Class.new(Dracula) do
+          desc "hello", "testing"
+          def hello(message)
+            puts message
+          end
+        end
+
+        msg = [
+          "[ERROR] Missing arguments",
+          "",
+          "Usage: abc hello [MESSAGE]",
+          "",
+          "Testing"
+        ].join("\n")
+
+        expect(catch_exit { cli.start(["hello", "a", "b"]) }).to eq(1)
+
+        stdout, stderr = collect_output { cli.start(["hello"]) }
+
+        expect(stdout).to eq(msg)
+        expect(stderr).to eq("")
       end
     end
   end

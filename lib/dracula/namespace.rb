@@ -64,7 +64,7 @@ class Dracula
         puts ""
       end
 
-      puts "Command list, type #{Dracula::UI.bold(Dracula.program_name + " help #{prefix}[command]")} for more details:"
+      puts "Command list, type #{Dracula::UI.bold(Dracula.program_name.to_s + " help #{prefix}[command]")} for more details:"
       puts ""
 
       banners = []

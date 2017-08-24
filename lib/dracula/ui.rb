@@ -2,11 +2,19 @@ class Dracula
   class UI
 
     def self.bold(str)
-      "\e[34m#{str}\e[0m"
+      if $stdout.tty? # colorize only if output is terminal
+        "\e[34m#{str}\e[0m"
+      else
+        str
+      end
     end
 
     def self.danger(str)
-      "\e[31m#{str}\e[0m"
+      if $stdout.tty? # colorize only if output is terminal
+        "\e[31m#{str}\e[0m"
+      else
+        str
+      end
     end
 
     def self.error(str)
