@@ -2,11 +2,12 @@ require "dracula/version"
 require "optparse"
 
 class Dracula
+  require "dracula/ui"
+  require "dracula/flag"
   require "dracula/command"
   require "dracula/command_help"
-  require "dracula/flag"
   require "dracula/namespace"
-  require "dracula/ui"
+  require "dracula/namespace_help"
 
   class << self
     def program_name(name = nil)
