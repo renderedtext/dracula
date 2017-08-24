@@ -18,6 +18,14 @@ class Dracula
       @options = options || []
     end
 
+    def prefix
+      @klass.namespace.prefix
+    end
+
+    def full_name
+      "#{prefix}#{name}"
+    end
+
     def name
       desc.name
     end
@@ -26,41 +34,22 @@ class Dracula
       @klass.instance_method(@method_name).parameters.select { |p| p[0] == :req }.map { |p| p[1].to_s.upcase }
     end
 
-    def banner
-      namespace = @klass.namespace.name ? "#{@klass.namespace.name}:" : ""
-      args = arguments.count > 0 ? " #{arguments.join(" ")}" : ""
-
-      "#{namespace}#{desc.name}#{args}"
-    end
-
     def help
-      msg = [
-        "Usage: #{Dracula.program_name} #{banner}",
-        "",
-        "#{desc.description}",
-        ""
-      ]
-
-      if options.size > 0
-        msg << "Flags:"
-
-        options.each { |option| msg << "  #{option.banner}" }
-
-        msg << ""
-      end
-
-      unless long_desc.nil?
-        msg << long_desc
-      end
-
-      puts msg.join("\n")
+      CommandHelp.new(self).show
     end
 
     def run(params)
       args = params.take_while { |p| p[0] != "-" }
 
-      if args.count != arguments.count
-        puts "Missing arguments"
+      if args.count < arguments.count
+        puts Dracula::UI.error("Missing arguments")
+        puts ""
+        help
+        exit(1)
+      end
+
+      if args.count > arguments.count
+        puts Dracula::UI.error("Too many arguments")
         puts ""
         help
         exit(1)
@@ -71,7 +60,7 @@ class Dracula
       missing_flags = missing_required_flags(parsed_flags)
 
       unless missing_flags.empty?
-        puts "Required Parameter: #{missing_flags.first.banner}"
+        puts Dracula::UI.error("Missing required Parameter: #{missing_flags.first.banner}")
         puts ""
         help
         exit(1)
@@ -81,7 +70,7 @@ class Dracula
     rescue OptionParser::MissingArgument => ex
       flag = flags.find { |f| "--#{f.name}" == ex.args.first }
 
-      puts "Parameter has no value: #{flag.banner}"
+      puts Dracula::UI.error("Missing flag parameter: #{flag.banner}")
       puts ""
       help
       exit(1)

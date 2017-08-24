@@ -5,11 +5,13 @@ class Dracula
     attr_accessor :description
     attr_accessor :commands
     attr_accessor :subcommands
+    attr_accessor :parent
 
     def initialize(klass)
       @klass = klass
       @commands = []
       @subcommands = []
+      @parent = []
     end
 
     def dispatch(route, params, action = :run)
@@ -22,7 +24,10 @@ class Dracula
         if handler
           action == :run ? handler.run(params) : handler.help
         else
+          puts Dracula::UI.error("Command not found")
+          puts ""
           help
+          exit(1)
         end
       else
         handler = subcommands.find { |c| c.name == route[0] }
@@ -30,7 +35,10 @@ class Dracula
         if handler
           handler.dispatch(route[1..-1], params, action)
         else
+          puts Dracula::UI.error("Command not found #{prefix}#{Dracula::UI.danger(route.join(":"))}")
+          puts ""
           help
+          exit(1)
         end
       end
     end
@@ -39,25 +47,16 @@ class Dracula
       help
     end
 
+    def prefix
+      name ? "#{parent.prefix}#{name}:" : ""
+    end
+
+    def top_level?
+      prefix == ""
+    end
+
     def help
-      prefix = name ? "#{name}:" : ""
-
-      puts "Usage: #{Dracula.program_name} #{prefix}<command>"
-      puts ""
-      puts (description || "Help topics, type #{Dracula.program_name} help TOPIC for more details:")
-      puts ""
-
-      command_list = []
-
-      commands.each do |cmd|
-        command_list << ["#{prefix}#{cmd.desc.name}", cmd.desc.description]
-      end
-
-      subcommands.each do |sub_cmd|
-        command_list << ["#{prefix}#{sub_cmd.name}", sub_cmd.description]
-      end
-
-      Dracula::UI.print_table(command_list, :indent => 2)
+      NamespaceHelp.new(self).show
     end
 
     def add_command(command)

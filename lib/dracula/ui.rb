@@ -1,6 +1,26 @@
 class Dracula
   class UI
 
+    def self.bold(str)
+      if $stdout.tty? # colorize only if output is terminal
+        "\e[34m#{str}\e[0m"
+      else
+        str
+      end
+    end
+
+    def self.danger(str)
+      if $stdout.tty? # colorize only if output is terminal
+        "\e[31m#{str}\e[0m"
+      else
+        str
+      end
+    end
+
+    def self.error(str)
+      danger("[ERROR] ") + str.to_s
+    end
+
     # Prints a table. Shamelesly copied from thor.
     #
     # ==== Parameters

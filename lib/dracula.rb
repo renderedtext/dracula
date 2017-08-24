@@ -2,10 +2,12 @@ require "dracula/version"
 require "optparse"
 
 class Dracula
-  require "dracula/command"
-  require "dracula/flag"
-  require "dracula/namespace"
   require "dracula/ui"
+  require "dracula/flag"
+  require "dracula/command"
+  require "dracula/command_help"
+  require "dracula/namespace"
+  require "dracula/namespace_help"
 
   class << self
     def program_name(name = nil)
@@ -59,6 +61,7 @@ class Dracula
     def register(name, description, klass)
       klass.namespace.name = name
       klass.namespace.description = description
+      klass.namespace.parent = namespace
 
       namespace.add_subcommand(klass.namespace)
     end
