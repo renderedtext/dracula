@@ -59,6 +59,7 @@ class Dracula
     def register(name, description, klass)
       klass.namespace.name = name
       klass.namespace.description = description
+      klass.namespace.parent = namespace
 
       namespace.add_subcommand(klass.namespace)
     end

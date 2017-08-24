@@ -5,11 +5,13 @@ class Dracula
     attr_accessor :description
     attr_accessor :commands
     attr_accessor :subcommands
+    attr_accessor :parent
 
     def initialize(klass)
       @klass = klass
       @commands = []
       @subcommands = []
+      @parent = []
     end
 
     def dispatch(route, params, action = :run)
@@ -22,7 +24,10 @@ class Dracula
         if handler
           action == :run ? handler.run(params) : handler.help
         else
+          puts Dracula::UI.error("Command not found")
+          puts ""
           help
+          exit(1)
         end
       else
         handler = subcommands.find { |c| c.name == route[0] }
@@ -30,7 +35,10 @@ class Dracula
         if handler
           handler.dispatch(route[1..-1], params, action)
         else
+          puts Dracula::UI.error("Command not found #{prefix}#{Dracula::UI.danger(route.join(":"))}")
+          puts ""
           help
+          exit(1)
         end
       end
     end
@@ -40,7 +48,7 @@ class Dracula
     end
 
     def prefix
-      name ? "#{name}:" : ""
+      name ? "#{parent.prefix}#{name}:" : ""
     end
 
     def top_level?
@@ -48,11 +56,15 @@ class Dracula
     end
 
     def help
-      default_desc = "Command list, type #{Dracula::UI.bold(Dracula.program_name + " help COMMAND")} for more details:"
-
       puts "Usage: #{Dracula.program_name} #{Dracula::UI.bold "#{prefix}[command]"}"
       puts ""
-      puts (description || default_desc).capitalize
+
+      if description
+        puts description.capitalize
+        puts ""
+      end
+
+      puts "Command list, type #{Dracula::UI.bold(Dracula.program_name + " help #{prefix}[command]")} for more details:"
       puts ""
 
       banners = []
@@ -76,7 +88,7 @@ class Dracula
 
         subcommands.each do |sub_cmd|
           sub_cmd.commands.each do |cmd|
-            banners << [Dracula::UI.bold("#{prefix}#{sub_cmd.prefix}#{cmd.desc.name}"), cmd.desc.description.capitalize]
+            banners << [Dracula::UI.bold("#{sub_cmd.prefix}#{cmd.desc.name}"), cmd.desc.description.capitalize]
           end
 
           banners << ["", ""] # empty line

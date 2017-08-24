@@ -5,8 +5,12 @@ class Dracula
       "\e[34m#{str}\e[0m"
     end
 
+    def self.danger(str)
+      "\e[31m#{str}\e[0m"
+    end
+
     def self.error(str)
-      "\e[31m[ERROR]\e[0m #{str}"
+      danger("[ERROR] ") + str.to_s
     end
 
     # Prints a table. Shamelesly copied from thor.
