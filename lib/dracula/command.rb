@@ -35,26 +35,7 @@ class Dracula
     end
 
     def help
-      msg = [
-        "Usage: #{Dracula.program_name} #{banner}",
-        "",
-        "#{desc.description.capitalize}",
-        ""
-      ]
-
-      if options.size > 0
-        msg << Dracula::UI.bold("Flags:")
-
-        options.each { |option| msg << "  #{option.banner}" }
-
-        msg << ""
-      end
-
-      unless long_desc.nil?
-        msg << long_desc
-      end
-
-      puts msg.join("\n")
+      CommandHelp.new(self).show
     end
 
     def run(params)

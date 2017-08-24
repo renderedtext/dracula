@@ -56,7 +56,7 @@ class Dracula
     end
 
     def help
-      puts "Usage: #{Dracula.program_name} #{Dracula::UI.bold "#{prefix}[command]"}"
+      puts "Usage: #{Dracula.program_name} #{Dracula::UI.bold "#{prefix}[command]"}\n"
       puts ""
 
       if description

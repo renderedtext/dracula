@@ -3,6 +3,7 @@ require "optparse"
 
 class Dracula
   require "dracula/command"
+  require "dracula/command_help"
   require "dracula/flag"
   require "dracula/namespace"
   require "dracula/ui"
