@@ -39,31 +39,51 @@ class Dracula
       help
     end
 
-    def help
-      prefix = name ? "#{name}:" : ""
+    def prefix
+      name ? "#{name}:" : ""
+    end
 
+    def top_level?
+      prefix == ""
+    end
+
+    def help
       default_desc = "Command list, type #{Dracula::UI.bold(Dracula.program_name + " help COMMAND")} for more details:"
 
       puts "Usage: #{Dracula.program_name} #{Dracula::UI.bold "#{prefix}[command]"}"
       puts ""
-      puts (description || default_desc)
+      puts (description || default_desc).capitalize
       puts ""
 
       banners = []
 
       commands.each do |cmd|
-        banners << [Dracula::UI.bold("#{prefix}#{cmd.desc.name}"), cmd.desc.description]
+        banners << [Dracula::UI.bold("#{prefix}#{cmd.desc.name}"), cmd.desc.description.capitalize]
       end
 
-      banners << ["", ""]
+      banners << ["", ""] # empty line
 
-      subcommands.each do |sub_cmd|
-        banners << [Dracula::UI.bold("#{prefix}#{sub_cmd.name}"), sub_cmd.description.capitalize]
+      if top_level?
+        # show only namespaces
+
+        subcommands.each do |sub_cmd|
+          banners << [Dracula::UI.bold("#{prefix}#{sub_cmd.name}"), sub_cmd.description.capitalize]
+        end
+
+        banners << ["", ""] # empty line
+      else
+        # show namespaces with commands
+
+        subcommands.each do |sub_cmd|
+          sub_cmd.commands.each do |cmd|
+            banners << [Dracula::UI.bold("#{prefix}#{sub_cmd.prefix}#{cmd.desc.name}"), cmd.desc.description.capitalize]
+          end
+
+          banners << ["", ""] # empty line
+        end
       end
 
       Dracula::UI.print_table(banners, :indent => 2)
-
-      puts ""
     end
 
     def add_command(command)
