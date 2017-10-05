@@ -280,6 +280,36 @@ RSpec.describe Dracula do
         end
       end
     end
+
+    context "passing unrecognized parameters" do
+      it "displays an error and the command's help" do
+        cli = Class.new(Dracula) do
+          option :message, :required => true
+          desc "hello", "testing"
+          def hello
+            puts "#{options[:message]}"
+          end
+        end
+
+        msg = [
+          "[ERROR] Unrecognized Parameter: --from",
+          "",
+          "Usage: abc hello [FLAGS]",
+          "",
+          "Testing",
+          "",
+          "Flags:",
+          "  --message MESSAGE"
+        ].join("\n")
+
+        expect(catch_exit { cli.start(["hello", "--from", "1"]) }).to eq(1)
+
+        stdout, stderr = collect_output { cli.start(["hello", "--from", "1"]) }
+
+        expect(stdout).to eq(msg)
+        expect(stderr).to eq("")
+      end
+    end
   end
 
   describe "command arguments" do

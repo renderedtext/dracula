@@ -74,6 +74,11 @@ class Dracula
       puts ""
       help
       exit(1)
+    rescue OptionParser::InvalidOption => ex
+      puts Dracula::UI.error("Unrecognized Parameter: #{ex.args.first}")
+      puts ""
+      help
+      exit(1)
     end
 
     private
