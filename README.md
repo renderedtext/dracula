@@ -217,6 +217,10 @@ An example output generated from the [example CLI interface](spec/example_cli.rb
 is the following:
 
 ``` ruby
+CLI.docs
+
+=>
+
 {
   :name => "",
 
