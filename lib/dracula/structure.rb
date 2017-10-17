@@ -1,5 +1,5 @@
 class Dracula
-  class Docs
+  class Structure
 
     attr_reader :namespace
 
@@ -11,7 +11,7 @@ class Dracula
       {
         :name => namespace.name.to_s,
         :commands => @namespace.commands.map { |cmd| command_docs(cmd) },
-        :namespaces => @namespace.subcommands.map { |sc| Dracula::Docs.new(sc).generate }
+        :namespaces => @namespace.subcommands.map { |sc| Dracula::Structure.new(sc).generate }
       }
     end
 

@@ -2,9 +2,9 @@ require "spec_helper"
 
 require_relative "example_cli"
 
-RSpec.describe Dracula do
+RSpec.describe Dracula::Structure do
 
-  describe ".docs" do
+  describe ".structure" do
 
     it "generates a hash suitable for docs generation" do
       output = {
@@ -70,7 +70,7 @@ RSpec.describe Dracula do
       }
 
       # CLI defined in example_cli.rb
-      expect(CLI.docs).to eql(output)
+      expect(CLI.structure).to eql(output)
     end
   end
 end

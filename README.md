@@ -19,7 +19,7 @@ app calendar:events:list
 app calendar:events:add
 ```
 
-For help, you can always invoke:
+For help, you can run:
 
 ``` txt
 app help <command-name>
