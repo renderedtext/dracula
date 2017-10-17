@@ -18,9 +18,9 @@ RSpec.describe Dracula do
     describe "main help screen" do
       it "lists the commands and subtopics" do
         msg = [
-          "Usage: abc [command]",
+          "Usage: git [command]",
           "",
-          "Command list, type abc help [command] for more details:",
+          "Command list, type git help [command] for more details:",
           "",
           "  login  Log in to the cli",
           "",
@@ -38,7 +38,7 @@ RSpec.describe Dracula do
     describe "command help" do
       it "shows the usage, flags, and long description" do
         msg = [
-          "Usage: abc login [FLAGS]",
+          "Usage: git login [FLAGS]",
           "",
           "Log in to the cli",
           "",
@@ -47,10 +47,7 @@ RSpec.describe Dracula do
           "  -p PASSWORD, --password PASSWORD",
           "  -v, --verbose",
           "",
-          "Examples:",
-          "",
-          "  $ cli login --username Peter --password Parker",
-          "  Peter:Parker"
+          "Log in to the app from the command line."
         ].join("\n")
 
         stdout, stderr = collect_output { CLI.start(["help", "login"]) }
@@ -63,11 +60,11 @@ RSpec.describe Dracula do
     describe "subnamespace help" do
       it "displays help for a subnamespace" do
         msg = [
-          "Usage: abc teams:[command]",
+          "Usage: git teams:[command]",
           "",
           "Manage teams",
           "",
-          "Command list, type abc help teams:[command] for more details:",
+          "Command list, type git help teams:[command] for more details:",
           "",
           "  teams:list           List teams in an organization",
           "  teams:info           Show info for a team",
@@ -87,7 +84,7 @@ RSpec.describe Dracula do
     describe "subcommand help" do
       it "displays help for a subcommand" do
         msg = [
-          "Usage: abc teams:info [TEAM]",
+          "Usage: git teams:info [TEAM]",
           "",
           "Show info for a team"
         ].join("\n")
@@ -187,7 +184,7 @@ RSpec.describe Dracula do
           msg = [
             "[ERROR] Missing flag parameter: --name NAME",
             "",
-            "Usage: abc hello [FLAGS]",
+            "Usage: git hello [FLAGS]",
             "",
             "Testing",
             "",
@@ -263,7 +260,7 @@ RSpec.describe Dracula do
           msg = [
             "[ERROR] Missing required Parameter: --message MESSAGE",
             "",
-            "Usage: abc hello [FLAGS]",
+            "Usage: git hello [FLAGS]",
             "",
             "Testing",
             "",
@@ -294,7 +291,7 @@ RSpec.describe Dracula do
         msg = [
           "[ERROR] Unrecognized Parameter: --from",
           "",
-          "Usage: abc hello [FLAGS]",
+          "Usage: git hello [FLAGS]",
           "",
           "Testing",
           "",
@@ -325,7 +322,7 @@ RSpec.describe Dracula do
         msg = [
           "[ERROR] Missing arguments",
           "",
-          "Usage: abc hello [MESSAGE]",
+          "Usage: git hello [MESSAGE]",
           "",
           "Testing"
         ].join("\n")
@@ -351,7 +348,7 @@ RSpec.describe Dracula do
         msg = [
           "[ERROR] Missing arguments",
           "",
-          "Usage: abc hello [MESSAGE]",
+          "Usage: git hello [MESSAGE]",
           "",
           "Testing"
         ].join("\n")

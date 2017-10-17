@@ -10,7 +10,7 @@ class Dracula
     def generate
       {
         :name => namespace.name.to_s,
-        :commands => @namespace.commands.map { |c| command_docs(c) },
+        :commands => @namespace.commands.map { |cmd| command_docs(cmd) },
         :namespaces => @namespace.subcommands.map { |sc| Dracula::Docs.new(sc).generate }
       }
     end
@@ -21,6 +21,7 @@ class Dracula
       {
         :name => command.name,
         :desc => command.description,
+        :long_desc => command.long_desc.to_s,
         :shell => command_shell(command),
         :options => command.options.map do |option|
           {
@@ -34,11 +35,19 @@ class Dracula
       }
     end
 
+    # shows how to calll the command from the shell
     def command_shell(command)
       args = command.arguments.join(" ")
       options = command.options.select(&:required?).map(&:long_name_banner).join(" ")
 
-      [Dracula.program_name, command.full_name, args, options].select { |element| element != "" }.join(" ")
+      elements = [
+        Dracula.program_name,
+        command.full_name,
+        args,
+        options
+      ]
+
+      elements.select { |element| element != "" }.join(" ")
     end
 
   end
