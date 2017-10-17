@@ -8,6 +8,7 @@ class Dracula
   require "dracula/command_help"
   require "dracula/namespace"
   require "dracula/namespace_help"
+  require "dracula/structure"
 
   class << self
     def program_name(name = nil)
@@ -39,6 +40,10 @@ class Dracula
 
         namespace.dispatch(command.split(":"), params, action)
       end
+    end
+
+    def structure
+      Dracula::Structure.new(namespace).generate
     end
 
     def namespace

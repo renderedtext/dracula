@@ -30,6 +30,10 @@ class Dracula
       desc.name
     end
 
+    def description
+      desc.description
+    end
+
     def arguments
       @klass.instance_method(@method_name).parameters.select { |p| p[0] == :req }.map { |p| p[1].to_s.upcase }
     end

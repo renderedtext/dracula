@@ -1,15 +1,12 @@
 class CLI < Dracula
-  program_name :abc
+  program_name :git
 
   option :username, :required => true, :alias => "u"
   option :password, :required => true, :alias => "p"
   option :verbose, :type => :boolean, :alias => "v"
   desc "login", "Log in to the cli"
   long_desc <<-LONGDESC
-Examples:
-
-  $ cli login --username Peter --password Parker
-  Peter:Parker
+Log in to the app from the command line.
   LONGDESC
   def login
     if options[:verbose]
