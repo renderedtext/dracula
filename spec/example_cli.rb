@@ -1,5 +1,5 @@
 class CLI < Dracula
-  program_name :abc
+  program_name :git
 
   option :username, :required => true, :alias => "u"
   option :password, :required => true, :alias => "p"
