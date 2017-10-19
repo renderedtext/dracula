@@ -48,9 +48,9 @@ Hi dracula!
 
 Every method in your class represents a command.
 
-## Command line options
+## Command line flags
 
-A command can have one or more command line options.
+A command can have one or more command line flags.
 
 ``` ruby
 class CLI < Dracula
@@ -72,11 +72,11 @@ $ cli hello --name "Peter"
 Hi Peter!
 ```
 
-The options are defined above the method.
+The flags are defined above the method.
 
 #### Default values
 
-Options can have default values:
+flags can have default values:
 
 ``` ruby
 class CLI < Dracula
@@ -230,7 +230,7 @@ CLI.docs
       :desc => "Log in to the cli",
       :long_desc => "Log in to the app from the command line.\n",
       :shell => "git login --username USERNAME --password PASSWORD",
-      :options => [
+      :flags => [
         { :name => "username", :required => true,  :type => "string",  :alias => "u", :default => nil },
         { :name => "password", :required => true,  :type => "string",  :alias => "p", :default => nil },
         { :name => "verbose",  :required => false, :type => "boolean", :alias => "v", :default => false }
@@ -247,14 +247,14 @@ CLI.docs
         :long_desc => "",
         :desc => "List teams in an organization",
         :shell => "git teams:list ORG",
-        :options => []
+        :flags => []
       },
       {
         :name => "info",
         :long_desc => "",
         :desc => "Show info for a team",
         :shell => "git teams:info TEAM",
-        :options => []
+        :flags => []
       }
     ],
 
@@ -267,14 +267,14 @@ CLI.docs
           :long_desc => "",
           :desc => "Add a project to the team",
           :shell => "git teams:projects:add TEAM PROJECT",
-          :options => []
+          :flags => []
         },
         {
           :name => "list",
           :desc => "List projects in a team",
           :long_desc => "",
           :shell => "git teams:projects:list TEAM",
-          :options => []
+          :flags => []
         }
       ],
 
