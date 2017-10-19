@@ -1,8 +1,8 @@
 class CLI < Dracula
   program_name :git
 
-  option :username, :required => true, :alias => "u"
-  option :password, :required => true, :alias => "p"
+  option :username, :required => true, :alias => "u", :desc => "Your username"
+  option :password, :required => true, :alias => "p", :desc => "Your password"
   option :verbose, :type => :boolean, :alias => "v"
   desc "login", "Log in to the cli"
   long_desc <<-LONGDESC

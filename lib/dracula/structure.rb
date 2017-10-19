@@ -23,13 +23,14 @@ class Dracula
         :desc => command.description,
         :long_desc => command.long_desc.to_s,
         :shell => command_shell(command),
-        :options => command.options.map do |option|
+        :flags => command.options.map do |option|
           {
             :name => option.name.to_s,
             :required => option.required?,
             :type => option.type.to_s,
             :alias => option.alias_name,
-            :default => option.default_value
+            :default => option.default_value,
+            :desc => option.description.to_s
           }
         end
       }

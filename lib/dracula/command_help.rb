@@ -43,7 +43,11 @@ class Dracula
     def show_flags
       puts Dracula::UI.bold("Flags:")
 
-      @command.flags.each { |flag| puts "  #{flag.banner}" }
+      flags = @command.flags.map do |flag|
+        [flag.banner, flag.description]
+      end
+
+      Dracula::UI.print_table(flags, :indent => 2)
 
       puts ""
     end

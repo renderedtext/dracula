@@ -43,8 +43,8 @@ RSpec.describe Dracula do
           "Log in to the cli",
           "",
           "Flags:",
-          "  -u USERNAME, --username USERNAME",
-          "  -p PASSWORD, --password PASSWORD",
+          "  -u USERNAME, --username USERNAME  Your username",
+          "  -p PASSWORD, --password PASSWORD  Your password",
           "  -v, --verbose",
           "",
           "Log in to the app from the command line."

@@ -1,6 +1,10 @@
 class Dracula
   class Flag < Struct.new(:name, :params)
 
+    def description
+      params[:desc]
+    end
+
     def type
       params[:type] || :string
     end
@@ -32,11 +36,7 @@ class Dracula
     alias_method :short_name, :alias_name
 
     def banner
-      if short_name_banner
-        "#{short_name_banner}, #{long_name_banner}"
-      else
-        long_name_banner
-      end
+      [short_name_banner, long_name_banner].compact.join(", ")
     end
 
     def short_name_banner
